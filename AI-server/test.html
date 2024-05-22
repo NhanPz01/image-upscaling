@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Upscaling Test</title>
+</head>
+<body>
+    <h1>Image Upscaling Test</h1>
+
+    <form id="upscale-form">
+        <label for="image-url">Image URL:</label><br>
+        <input type="text" id="image-url" name="image-url"><br>
+        <input type="submit" value="Upscale Image">
+    </form>
+
+    <h2>Upscaled Image:</h2>
+    <img id="upscaled-image" src="" alt="Upscaled image will appear here">
+
+    <script>
+        document.getElementById('upscale-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var imageUrl = document.getElementById('image-url').value;
+
+            fetch('http://localhost:5000/upscale', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'image_url': imageUrl
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                var upscaledImage = document.getElementById('upscaled-image');
+                upscaledImage.src = 'data:image/jpeg;base64,' + data.image_base64;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
