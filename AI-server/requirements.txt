@@ -41,3 +41,4 @@ Werkzeug==3.0.3
 yapf==0.40.2
 zipp==3.18.2
 mysql-connector-python
+celery

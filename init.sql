@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS user (
 -- Create the image table with the status column
 CREATE TABLE IF NOT EXISTS image (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    url BLOB,
+    url LONGBLOB,
     uploadAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id VARCHAR(255),
     status VARCHAR(20) DEFAULT 'WAITING' NOT NULL, -- Added status column
@@ -30,11 +30,3 @@ INSERT INTO user (username, password) VALUES
     ('user4', '44444444'),
     ('user5', '55555555')
 ON DUPLICATE KEY UPDATE password=VALUES(password);
-
--- Insert images for user1 (status will be 'WAITING' by default)
-INSERT INTO image (url, user_id) VALUES
-    (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/PBL-5.png'), 'user1'),
-    (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/pair-dragon-maid.png'), 'user1'),
-    (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/pointing-dragon-maid.png'), 'user1'),
-    (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/funny_2.jpg'), 'user1'),
-    (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/bk_icon.jpg'), 'user1');
