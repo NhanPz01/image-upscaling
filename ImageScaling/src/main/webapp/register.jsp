@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: nguye
-  Date: 5/23/2024
-  Time: 8:49 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -31,26 +24,24 @@
     </header>
 </div>
 <div class="container">
-    <h1>Sign up</h1>
-    <form action="login" method="post">
-        <!-- Username input -->
+    <h1>Sign Up</h1>
+    <%-- Display error message if it exists --%>
+    <p style="color: red;">${errorMessage}</p>
+    <form action="register" method="post">
         <div data-mdb-input-init class="form-outline mb-4">
-            <input type="text" id="username" class="form-control" />
+            <input type="text" id="username" name="username" class="form-control" required />
             <label class="form-label" for="username">Username</label>
         </div>
 
-        <!-- Password input -->
         <div data-mdb-input-init class="form-outline mb-4">
-            <input type="password" id="password" class="form-control" />
+            <input type="password" id="password" name="password" class="form-control" required />
             <label class="form-label" for="password">Password</label>
         </div>
 
-        <!-- Submit button -->
-        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
+        <button type="submit" class="btn btn-primary btn-block mb-4">Sign Up</button>
 
-        <!-- Register buttons -->
         <div class="text-center">
-            <p>Already have account? <a href="/login">Login</a></p>
+            <p>Already have an account? <a href="/login">Login</a></p>
         </div>
     </form>
 </div>
