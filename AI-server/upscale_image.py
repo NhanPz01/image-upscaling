@@ -4,7 +4,6 @@ from flask_cors import CORS
 import numpy as np
 from realesrgan import RealESRGANer
 from basicsr.archs.rrdbnet_arch import RRDBNet
-import requests
 import torch
 import time
 import io
@@ -39,22 +38,21 @@ def upscale_image():
         A JSON response containing the upscaled image as a base64 encoded string.
     """
     try:
-        data = request.get_json()
-        image_url = data.get('image_url')
-        if not image_url:
-            return jsonify({'error': 'Image URL is missing'}), 400
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image file provided'}), 400
 
-        # Download the image from the URL
-        response = requests.get(image_url)
-        response.raise_for_status()  # Raise an exception for bad status codes
-        image_data = response.content
+        # Get the uploaded image file
+        image_file = request.files['image']
+
+        # Read the image data
+        image_data = image_file.read()
 
         # Convert the image data to a NumPy array
-        image = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
+        image_np = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
 
         # Upscale the image
         start_time = time.time()
-        output_image, _ = upscaler.enhance(image)
+        output_image, _ = upscaler.enhance(image_np)
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"Upscaling took {elapsed_time} seconds")
@@ -69,4 +67,4 @@ def upscale_image():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
