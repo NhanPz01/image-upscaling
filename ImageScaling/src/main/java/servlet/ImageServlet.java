@@ -16,7 +16,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 
-@WebServlet(urlPatterns = {"/", "/index", "/user/images"})
+@WebServlet(urlPatterns = {"/profile",})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
         maxRequestSize = 1024 * 1024 * 50) // 50MB

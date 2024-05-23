@@ -1,29 +1,12 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
 
-<web-app>
-  <display-name>Archetype Created Web Application</display-name> 
-  <description></description>
-  <servlet>
-    <servlet-name>UploadServlet</servlet-name>
-    <display-name>UploadServlet</display-name>
-    <description></description>
-    <servlet-class>servlet.UploadServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>ImageServlet</servlet-name>
-    <display-name>ImageServlet</display-name>
-    <description></description>
-    <servlet-class>servlet.ImageServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UploadServlet</servlet-name>
-    <url-pattern>/UploadServlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>ImageServlet</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>
+    <display-name>Image Scaling Application</display-name>
+
+
 
 </web-app>

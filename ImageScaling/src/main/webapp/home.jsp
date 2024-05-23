@@ -13,13 +13,11 @@
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">Your Images</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">Upload</a></li>
+            <li><a href="/profile" class="nav-link px-2 link-dark">Your Images</a></li>
         </ul>
 
         <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2"><a href="/login">Login</a></button>
-            <button type="button" class="btn btn-primary"><a href="/register">Sign-up</a></button>
+            <h3>Welcome, ${username}!</h3> 
         </div>
     </header>
 </div>
