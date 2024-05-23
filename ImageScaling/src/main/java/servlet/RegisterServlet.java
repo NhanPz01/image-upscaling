@@ -30,7 +30,7 @@ public class RegisterServlet extends HttpServlet {
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/image_scaling",
                     "root",
-                    "111111");
+                    "");
             String username = req.getParameter("username");
             String password = req.getParameter("password");
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER);

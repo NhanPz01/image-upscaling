@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/image_scaling",
                     "root",
-                    "111111");
+                    "");
             String username = req.getParameter("username");
             String password = req.getParameter("password");
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_USERS_WITH_USERNAME_AND_PASSWORD);

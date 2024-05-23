@@ -1,12 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: nguye
-  Date: 5/23/2024
-  Time: 8:48 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib uri="http://cloudinary.com/jsp/taglib" prefix="cl" %>
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -31,11 +23,55 @@
         </div>
     </header>
 </div>
+
 <div class="container">
-    <c:forEach var="image" items="${images}">
-        <img src="${image}" alt="User image">
-    </c:forEach>
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Upload Image</h1>
+            <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="imageInput">Choose Image:</label>
+                    <input type="file" class="form-control-file" id="imageInput" name="image">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h1>Upscaled Image</h1>
+            <img id="upscaledImage" src="" alt="Upscaled Image" style="max-width: 100%; height: auto;">
+        </div>
+    </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#uploadForm').on('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/upscale', 
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response && response.image_base64) {
+                        $('#upscaledImage').attr('src', 'data:image/jpeg;base64,' + response.image_base64);
+                    } else {
+                        console.error('Response does not contain image_base64');
+                        alert('An error occurred while upscaling the image.');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while upscaling the image.');
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
-
