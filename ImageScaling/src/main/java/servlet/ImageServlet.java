@@ -15,45 +15,53 @@ import java.util.Base64;
 import java.util.List;
 import org.json.JSONObject;
 
+import model.Image;
 
-@WebServlet(urlPatterns = {"/profile",})
+
+@WebServlet(urlPatterns = {"/profile", "/profile/images"}) // Added /profile/images
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
         maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class ImageServlet extends HttpServlet {
-    private static final String GET_USER_IMAGES = "SELECT * FROM image";
+	private static final String GET_USER_IMAGES = "SELECT * FROM image WHERE user_id = ?";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = (String) req.getSession().getAttribute("username");
+        if (username == null) {
+            // Redirect to login if not logged in
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+        
         try {
-        	System.out.println("invoked");
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/image_scaling",
                     "root",
                     "");
+
             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_IMAGES);
+            preparedStatement.setString(1, username); // Set username parameter
+
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Image> images = new ArrayList<>();
             while (resultSet.next()) {
-            	int id = resultSet.getInt("id");
+                int id = resultSet.getInt("id");
                 Blob imageBlob = resultSet.getBlob("url");
                 if (imageBlob != null) {
                     byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
                     String base64Image = Base64.getEncoder().encodeToString(imageBytes);
                     images.add(new Image(id, base64Image));
-                    System.out.println(images);
                 }
             }
+
             req.setAttribute("images", images);
-            String path = req.getServletPath();
-            if (path.equals("/") || path.equals("/index")) {
-                req.getRequestDispatcher("index.jsp").forward(req, resp);
-            } else if (path.equals("/user/images")) {
-                req.getRequestDispatcher("user/images.jsp").forward(req, resp);
-            }
+            req.getRequestDispatcher("profile.jsp").forward(req, resp);
+
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error occurred.");
         }
     }
 
@@ -142,23 +150,5 @@ public class ImageServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while processing the image.");
             e.printStackTrace(); 
         }
-    }
-}
-
-class Image {
-    private int id;
-    private String base64Image;
-
-    public Image(int id, String base64Image) {
-        this.id = id;
-        this.base64Image = base64Image;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getBase64Image() {
-        return base64Image;
     }
 }

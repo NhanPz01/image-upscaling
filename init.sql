@@ -10,12 +10,13 @@ CREATE TABLE IF NOT EXISTS user (
     password VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Create the image table
+-- Create the image table with the status column
 CREATE TABLE IF NOT EXISTS image (
     id INT AUTO_INCREMENT PRIMARY KEY,
     url BLOB,
     uploadAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'WAITING' NOT NULL, -- Added status column
     FOREIGN KEY (user_id) REFERENCES user(username)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -30,7 +31,7 @@ INSERT INTO user (username, password) VALUES
     ('user5', '55555555')
 ON DUPLICATE KEY UPDATE password=VALUES(password);
 
--- Insert images for user1
+-- Insert images for user1 (status will be 'WAITING' by default)
 INSERT INTO image (url, user_id) VALUES
     (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/PBL-5.png'), 'user1'),
     (LOAD_FILE('D:/Study/lap-trinh-mang/jsp-project/image-upscaling/ImageScaling/src/main/webapp/assets/image/pair-dragon-maid.png'), 'user1'),

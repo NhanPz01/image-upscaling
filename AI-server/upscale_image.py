@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
 import cv2
 from flask_cors import CORS
 import numpy as np
@@ -8,63 +8,118 @@ import torch
 import time
 import io
 import base64
+import mysql.connector
 
 app = Flask(__name__)
 CORS(app)
+
+# Database configuration
+db_config = {
+    "host": "localhost",
+    "user": "root",  # Replace with your database username
+    "password": "",  # Replace with your database password
+    "database": "image_scaling" 
+}
 
 # Path to the Real-ESRGAN model
 model_path = "RealESRGAN_x2plus.pth"
 
 # Create the Real-ESRGAN upscaler
 upscaler = RealESRGANer(
-    scale=2,  # Upscaling factor (e.g., 2 for 2x upscaling)
+    scale=2,
     model_path=model_path,
     model=RRDBNet(
         num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2
-    ),  # Define model architecture
-    tile=0,  # Tile size for processing large images (0 for no tiling)
-    tile_pad=10,  # Padding for tiling
-    pre_pad=10,  # Padding before upscaling
-    half=False,  # Whether to use half precision
+    ),
+    tile=0,
+    tile_pad=10,
+    pre_pad=10,
+    half=False,
     device="cuda" if torch.cuda.is_available() else "cpu",
 )
 
 @app.route('/upscale', methods=['POST'])
 def upscale_image():
-    """
-    Endpoint for upscaling an image.
-
-    Returns:
-        A JSON response containing the upscaled image as a base64 encoded string.
-    """
     try:
+        user_id = request.form.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+
         if 'image' not in request.files:
             return jsonify({'error': 'No image file provided'}), 400
 
-        # Get the uploaded image file
         image_file = request.files['image']
 
-        # Read the image data
-        image_data = image_file.read()
+        # Save the user ID and status "WAITING" first
+        image_id = save_image_info_to_db(user_id)
+        if not image_id:
+            return jsonify({'error': 'Failed to save image info to database'}), 500
 
-        # Convert the image data to a NumPy array
+        # Read and process the image
+        image_data = image_file.read()
         image_np = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
 
-        # Upscale the image
         start_time = time.time()
         output_image, _ = upscaler.enhance(image_np)
         end_time = time.time()
-        elapsed_time = end_time - start_time
-        print(f"Upscaling took {elapsed_time} seconds")
+        print(f"Upscaling took {end_time - start_time} seconds")
 
         # Encode the upscaled image to base64
         _, buffer = cv2.imencode('.jpg', output_image)
         image_base64 = base64.b64encode(buffer).decode('utf-8')
 
-        return jsonify({'image_base64': image_base64})
+        # Update the image data and status to "DONE" 
+        update_image_in_db(image_id, image_base64)
+
+        return jsonify({'image_base64': image_base64, 'image_id': image_id})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+def save_image_info_to_db(user_id):
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        insert_query = """
+            INSERT INTO image (user_id, status) 
+            VALUES (%s, 'WAITING')
+        """
+        cursor.execute(insert_query, (user_id,))
+        connection.commit()
+        image_id = cursor.lastrowid
+        return image_id
+
+    except Exception as e:
+        print(f"Error saving image info to database: {e}")
+        return None
+    finally:
+        if connection and connection.is_connected():
+            cursor.close()
+            connection.close()
+
+def update_image_in_db(image_id, image_base64):
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        update_query = """
+            UPDATE image 
+            SET status = 'DONE', url = %s
+            WHERE id = %s
+        """
+        image_data = base64.b64decode(image_base64)
+        cursor.execute(update_query, (image_data, image_id))
+        connection.commit()
+
+    except Exception as e:
+        print(f"Error updating image in database: {e}")
+    finally:
+        if connection and connection.is_connected():
+            cursor.close()
+            connection.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)

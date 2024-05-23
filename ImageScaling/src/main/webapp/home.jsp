@@ -12,8 +12,8 @@
         </a>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-            <li><a href="/profile" class="nav-link px-2 link-dark">Your Images</a></li>
+            <li><a href="/login" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a href="profile" class="nav-link px-2 link-dark">Your Images</a></li>
         </ul>
 
         <div class="col-md-3 text-end">
@@ -26,6 +26,7 @@
         <div class="col-md-6">
             <h1>Upload Image</h1>
             <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="userId" name="user_id" value="${username}">
                 <div class="form-group">
                     <label for="imageInput">Choose Image:</label>
                     <input type="file" class="form-control-file" id="imageInput" name="image">
