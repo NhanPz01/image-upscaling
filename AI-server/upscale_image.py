@@ -13,18 +13,15 @@ import mysql.connector
 app = Flask(__name__)
 CORS(app)
 
-# Database configuration
 db_config = {
     "host": "localhost",
-    "user": "root",  # Replace with your database username
-    "password": "",  # Replace with your database password
+    "user": "root",  
+    "password": "",  
     "database": "image_scaling" 
 }
 
-# Path to the Real-ESRGAN model
 model_path = "RealESRGAN_x2plus.pth"
 
-# Create the Real-ESRGAN upscaler
 upscaler = RealESRGANer(
     scale=2,
     model_path=model_path,
@@ -50,12 +47,10 @@ def upscale_image():
 
         image_file = request.files['image']
 
-        # Save the user ID and status "WAITING" first
         image_id = save_image_info_to_db(user_id)
         if not image_id:
             return jsonify({'error': 'Failed to save image info to database'}), 500
 
-        # Read and process the image
         image_data = image_file.read()
         image_np = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
 
@@ -64,11 +59,9 @@ def upscale_image():
         end_time = time.time()
         print(f"Upscaling took {end_time - start_time} seconds")
 
-        # Encode the upscaled image to base64
         _, buffer = cv2.imencode('.jpg', output_image)
         image_base64 = base64.b64encode(buffer).decode('utf-8')
 
-        # Update the image data and status to "DONE" 
         update_image_in_db(image_id, image_base64)
 
         return jsonify({'image_base64': image_base64, 'image_id': image_id})
