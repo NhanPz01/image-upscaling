@@ -26,8 +26,9 @@
         </ul>
 
         <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2"><a href="/login">Login</a></button>
-            <button type="button" class="btn btn-primary"><a href="/register">Sign-up</a></button>
+            <button type="button" class="btn btn-outline-primary me-2">
+                <a href="/user">Profile</a>
+            </button>
         </div>
     </header>
 </div>

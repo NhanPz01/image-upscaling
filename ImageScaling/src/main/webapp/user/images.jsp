@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: nguye
   Date: 5/23/2024
-  Time: 8:48 AM
+  Time: 9:23 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -26,8 +26,9 @@
         </ul>
 
         <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2"><a href="/login">Login</a></button>
-            <button type="button" class="btn btn-primary"><a href="/register">Sign-up</a></button>
+            <button type="button" class="btn btn-outline-primary me-2">
+                <a href="/user">Profile</a>
+            </button>
         </div>
     </header>
 </div>
@@ -38,4 +39,3 @@
 </div>
 </body>
 </html>
-

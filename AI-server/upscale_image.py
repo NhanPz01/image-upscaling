@@ -26,7 +26,7 @@ upscaler = RealESRGANer(
     tile=0,  # Tile size for processing large images (0 for no tiling)
     tile_pad=10,  # Padding for tiling
     pre_pad=10,  # Padding before upscaling
-    half=True,  # Whether to use half precision
+    half=False,  # Whether to use half precision
     device="cuda" if torch.cuda.is_available() else "cpu",
 )
 

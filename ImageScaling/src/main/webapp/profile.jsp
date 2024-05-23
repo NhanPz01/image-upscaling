@@ -6,7 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib uri="http://cloudinary.com/jsp/taglib" prefix="cl" %>
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -26,16 +25,13 @@
         </ul>
 
         <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2"><a href="/login">Login</a></button>
-            <button type="button" class="btn btn-primary"><a href="/register">Sign-up</a></button>
+            <button type="button" class="btn btn-outline-primary me-2">
+                <a href="/user">Profile</a>
+            </button>
         </div>
     </header>
 </div>
-<div class="container">
-    <c:forEach var="image" items="${images}">
-        <img src="${image}" alt="User image">
-    </c:forEach>
-</div>
+<h1>Welcome, ${user.username}!</h1>
+<p>Your password is: ${user.password}</p>
 </body>
 </html>
-
